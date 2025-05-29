@@ -13,6 +13,7 @@ echo "Restoring backend python packages"
 echo ""
 
 ./.venv/bin/python -m pip install -r app/backend/requirements.txt
+./.venv/bin/python -m pip install setuptools
 out=$?
 if [ $out -ne 0 ]; then
     echo "Failed to restore backend python packages"
