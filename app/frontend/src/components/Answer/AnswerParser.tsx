@@ -10,6 +10,7 @@ type HtmlParsedAnswer = {
 function isCitationValid(contextDataPoints: any, citationCandidate: string): boolean {
     const regex = /.+\.\w{1,}(?:#\S*)?$/;
     if (!regex.test(citationCandidate)) {
+        console.log(`Citation regex failed for: ${citationCandidate}`);
         return false;
     }
 
@@ -20,13 +21,20 @@ function isCitationValid(contextDataPoints: any, citationCandidate: string): boo
     } else if (contextDataPoints && Array.isArray(contextDataPoints.text)) {
         dataPointsArray = contextDataPoints.text;
     } else {
+        console.log('No valid data points array found');
         return false;
     }
 
+    console.log(`Checking citation: ${citationCandidate}`);
+    console.log('Available data points:', dataPointsArray);
+
     const isValidCitation = dataPointsArray.some(dataPoint => {
-        return dataPoint.startsWith(citationCandidate);
+        const matches = dataPoint.startsWith(citationCandidate);
+        console.log(`Does "${dataPoint}" start with "${citationCandidate}"? ${matches}`);
+        return matches;
     });
 
+    console.log(`Citation validation result: ${isValidCitation}`);
     return isValidCitation;
 }
 
