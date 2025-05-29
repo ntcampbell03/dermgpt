@@ -286,7 +286,7 @@ export function Component(): JSX.Element {
             <div className={styles.askTopSection}>
                 <div className={styles.commandsContainer}>
                     {showUserUpload && <UploadFile className={styles.commandButton} disabled={!loggedIn} />}
-                    <SettingsButton className={styles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
+                    {/* <SettingsButton className={styles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} /> */}
                 </div>
                 <h1 className={styles.askTitle}>{t("askTitle")}</h1>
                 <div className={styles.askQuestionInput}>
