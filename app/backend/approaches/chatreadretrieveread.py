@@ -92,6 +92,7 @@ class ChatReadRetrieveReadApproach(ChatApproach):
         else:
             extra_info = await self.run_search_approach(messages, overrides, auth_claims)
 
+
         is_example = overrides.get("is_example", False)
         example_index = overrides.get("example_index", 0)
         if is_example:
@@ -100,16 +101,24 @@ class ChatReadRetrieveReadApproach(ChatApproach):
         else:
             self.answer_prompt = self.prompt_manager.load_prompt("chat_answer_question.prompty")
 
+        # Prepare prompt variables
+        prompt_variables = self.get_system_prompt_variables(overrides.get("prompt_template")) | {
+            "include_follow_up_questions": bool(overrides.get("suggest_followup_questions")),
+            "past_messages": messages[:-1],
+            "user_query": original_user_query,
+        }
+        
+        # Pass empty text_sources for examples, actual sources for normal queries
+        if is_example and len(messages) == 1:
+            prompt_variables["text_sources"] = []
+        else:
+            prompt_variables["text_sources"] = extra_info.data_points.text
+        
         messages = self.prompt_manager.render_prompt(
             self.answer_prompt,
-            self.get_system_prompt_variables(overrides.get("prompt_template"))
-            | {
-                "include_follow_up_questions": bool(overrides.get("suggest_followup_questions")),
-                "past_messages": messages[:-1],
-                "user_query": original_user_query,
-                "text_sources": extra_info.data_points.text,
-            },
+            prompt_variables,
         )
+        print(messages)
 
         chat_coroutine = cast(
             Union[Awaitable[ChatCompletion], Awaitable[AsyncStream[ChatCompletionChunk]]],

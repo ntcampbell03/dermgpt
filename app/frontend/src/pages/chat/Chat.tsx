@@ -456,7 +456,7 @@ const Chat = () => {
                                                 onCitationClicked={c => onShowCitation(c, index)}
                                                 onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
                                                 onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                                onFollowupQuestionClicked={q => makeApiRequest(q)}
+                                                onFollowupQuestionClicked={q => makeApiRequest(q, isExample)}
                                                 showFollowupQuestions={useSuggestFollowupQuestions && answers.length - 1 === index}
                                                 showSpeechOutputAzure={showSpeechOutputAzure}
                                                 showSpeechOutputBrowser={showSpeechOutputBrowser}
@@ -479,7 +479,7 @@ const Chat = () => {
                                                 onCitationClicked={c => onShowCitation(c, index)}
                                                 onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
                                                 onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
-                                                onFollowupQuestionClicked={q => makeApiRequest(q)}
+                                                onFollowupQuestionClicked={q => makeApiRequest(q, isExample)}
                                                 showFollowupQuestions={useSuggestFollowupQuestions && answers.length - 1 === index}
                                                 showSpeechOutputAzure={showSpeechOutputAzure}
                                                 showSpeechOutputBrowser={showSpeechOutputBrowser}
@@ -489,7 +489,7 @@ const Chat = () => {
                                 ))}
                             {isLoading && (
                                 <>
-                                    {!hideFirstUserMessage && <UserChatMessage message={lastQuestionRef.current} />}
+                                    {!(hideFirstUserMessage && answers.length === 0) && <UserChatMessage message={lastQuestionRef.current} />}
                                     <div className={styles.chatMessageGptMinWidth}>
                                         <AnswerLoading />
                                     </div>
@@ -512,7 +512,7 @@ const Chat = () => {
                             clearOnSend
                             placeholder={t("defaultExamples.placeholder")}
                             disabled={isLoading}
-                            onSend={question => makeApiRequest(question)}
+                            onSend={question => makeApiRequest(question, isExample)}
                             showSpeechInput={showSpeechInput}
                         />
                     </div>
