@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import styles from "./Example.module.css";
 
 interface Props {
-    onExampleClicked: (value: string) => void;
+    onExampleClicked: (value: string, example_index: number) => void;
     useGPT4V?: boolean;
 }
 
@@ -18,7 +18,7 @@ export const ExampleList = ({ onExampleClicked, useGPT4V }: Props) => {
         <ul className={styles.examplesNavList}>
             {(useGPT4V ? GPT4V_EXAMPLES : DEFAULT_EXAMPLES).map((question, i) => (
                 <li key={i}>
-                    <Example text={question} value={question} onClick={onExampleClicked} />
+                    <Example text={question} value={question} onClick={() => onExampleClicked(question, i)} />
                 </li>
             ))}
         </ul>

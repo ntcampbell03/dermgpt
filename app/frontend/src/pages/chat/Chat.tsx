@@ -96,6 +96,7 @@ const Chat = () => {
 
     const audio = useRef(new Audio()).current;
     const [isPlaying, setIsPlaying] = useState(false);
+    const [isExample, setIsExample] = useState<boolean>(false);
 
     const speechConfig: SpeechConfig = {
         speechUrls,
@@ -195,7 +196,7 @@ const Chat = () => {
     })();
     const historyManager = useHistoryManager(historyProvider);
 
-    const makeApiRequest = async (question: string) => {
+    const makeApiRequest = async (question: string, is_example: boolean = false, example_index: number = 0) => {
         lastQuestionRef.current = question;
 
         error && setError(undefined);
@@ -237,7 +238,9 @@ const Chat = () => {
                         gpt4v_input: gpt4vInput,
                         language: i18n.language,
                         use_agentic_retrieval: useAgenticRetrieval,
-                        ...(seed !== null ? { seed: seed } : {})
+                        ...(seed !== null ? { seed: seed } : {}),
+                        is_example: is_example,
+                        example_index: example_index
                     }
                 },
                 // AI Chat Protocol: Client must pass on any session state received from the server
@@ -368,8 +371,9 @@ const Chat = () => {
         }
     };
 
-    const onExampleClicked = (example: string) => {
-        makeApiRequest(example);
+    const onExampleClicked = (example: string, example_index: number) => {
+        setIsExample(true);
+        makeApiRequest(example, true, example_index);
     };
 
     const onShowCitation = (citation: string, index: number) => {
@@ -424,13 +428,13 @@ const Chat = () => {
                             {showLanguagePicker && <LanguagePicker onLanguageChange={newLang => i18n.changeLanguage(newLang)} />}
 
                             <ExampleList onExampleClicked={onExampleClicked} useGPT4V={useGPT4V} />
-                        </div>
+                        </div>  
                     ) : (
                         <div className={styles.chatMessageStream}>
                             {isStreaming &&
                                 streamedAnswers.map((streamedAnswer, index) => (
                                     <div key={index}>
-                                        <UserChatMessage message={streamedAnswer[0]} />
+                                        {!(isExample && index === 0) && <UserChatMessage message={streamedAnswer[0]} />}
                                         <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 isStreaming={true}
@@ -453,7 +457,7 @@ const Chat = () => {
                             {!isStreaming &&
                                 answers.map((answer, index) => (
                                     <div key={index}>
-                                        <UserChatMessage message={answer[0]} />
+                                        {!(isExample && index === 0) && <UserChatMessage message={answer[0]} />}
                                         <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 isStreaming={false}
@@ -475,7 +479,7 @@ const Chat = () => {
                                 ))}
                             {isLoading && (
                                 <>
-                                    <UserChatMessage message={lastQuestionRef.current} />
+                                    {!isExample && <UserChatMessage message={lastQuestionRef.current} />}
                                     <div className={styles.chatMessageGptMinWidth}>
                                         <AnswerLoading />
                                     </div>

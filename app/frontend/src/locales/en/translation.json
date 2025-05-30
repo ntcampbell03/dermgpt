@@ -37,10 +37,10 @@
     "chatEmptyStateTitle": "DermGPT",
     "chatEmptyStateSubtitle": "Ask anything or try an example",
     "defaultExamples": {
-        "1": "What is psoriasis?",
-        "2": "What is eczema?",
-        "3": "What is acne?",
-        "placeholder": "Type a new question (e.g. does my plan cover annual eye exams?)"
+        "1": "*Get a second opinion on complex cases* Discuss challenging cases with an AI dermatology colleague - just like a curbside consult",
+        "2": "*Create personalized patient handouts* Generate targeted education materials tailored to your specific patient needs",
+        "3": "*Streamline prior authorization requests* Get help crafting compelling prior auth letters with all required documentation",
+        "placeholder": "Type a new question (e.g. what is psoriasis?)"
     },
     "askTitle": "Ask your data",
     "gpt4vExamples": {

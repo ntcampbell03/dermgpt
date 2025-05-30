@@ -92,6 +92,14 @@ class ChatReadRetrieveReadApproach(ChatApproach):
         else:
             extra_info = await self.run_search_approach(messages, overrides, auth_claims)
 
+        is_example = overrides.get("is_example", False)
+        example_index = overrides.get("example_index", 0)
+        if is_example:
+            print(f"using example prompt {example_index}")
+            self.answer_prompt = self.prompt_manager.load_prompt(f"chat_answer_question_example_{example_index}.prompty")
+        else:
+            self.answer_prompt = self.prompt_manager.load_prompt("chat_answer_question.prompty")
+
         messages = self.prompt_manager.render_prompt(
             self.answer_prompt,
             self.get_system_prompt_variables(overrides.get("prompt_template"))
