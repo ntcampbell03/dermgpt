@@ -97,6 +97,7 @@ const Chat = () => {
     const audio = useRef(new Audio()).current;
     const [isPlaying, setIsPlaying] = useState(false);
     const [isExample, setIsExample] = useState<boolean>(false);
+    const [hideFirstUserMessage, setHideFirstUserMessage] = useState<boolean>(false);
 
     const speechConfig: SpeechConfig = {
         speechUrls,
@@ -204,6 +205,12 @@ const Chat = () => {
         setActiveCitation(undefined);
         setActiveAnalysisPanelTab(undefined);
 
+        if (is_example) {
+            setHideFirstUserMessage(true);
+        } else {
+            setHideFirstUserMessage(false);
+        }
+
         const token = client ? await getToken(client) : undefined;
 
         try {
@@ -290,6 +297,8 @@ const Chat = () => {
         setStreamedAnswers([]);
         setIsLoading(false);
         setIsStreaming(false);
+        setIsExample(false);
+        setHideFirstUserMessage(false);
     };
 
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
@@ -373,7 +382,8 @@ const Chat = () => {
 
     const onExampleClicked = (example: string, example_index: number) => {
         setIsExample(true);
-        makeApiRequest(example, true, example_index);
+        setHideFirstUserMessage(true);
+        makeApiRequest("Could you please help me with this matter?", true, example_index);
     };
 
     const onShowCitation = (citation: string, index: number) => {
@@ -434,7 +444,7 @@ const Chat = () => {
                             {isStreaming &&
                                 streamedAnswers.map((streamedAnswer, index) => (
                                     <div key={index}>
-                                        {!(isExample && index === 0) && <UserChatMessage message={streamedAnswer[0]} />}
+                                        {!(hideFirstUserMessage && index === 0) && <UserChatMessage message={streamedAnswer[0]} />}
                                         <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 isStreaming={true}
@@ -457,7 +467,7 @@ const Chat = () => {
                             {!isStreaming &&
                                 answers.map((answer, index) => (
                                     <div key={index}>
-                                        {!(isExample && index === 0) && <UserChatMessage message={answer[0]} />}
+                                        {!(hideFirstUserMessage && index === 0) && <UserChatMessage message={answer[0]} />}
                                         <div className={styles.chatMessageGpt}>
                                             <Answer
                                                 isStreaming={false}
@@ -479,7 +489,7 @@ const Chat = () => {
                                 ))}
                             {isLoading && (
                                 <>
-                                    {!isExample && <UserChatMessage message={lastQuestionRef.current} />}
+                                    {!hideFirstUserMessage && <UserChatMessage message={lastQuestionRef.current} />}
                                     <div className={styles.chatMessageGptMinWidth}>
                                         <AnswerLoading />
                                     </div>
